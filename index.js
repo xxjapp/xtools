@@ -47,9 +47,9 @@ function onCopy() {
     let output = document.getElementById("output1").value
 
     navigator.clipboard && navigator.clipboard.writeText(output).then(function() {
-        w("/* clipboard successfully set */")
+        xdialog.info("clipboard successfully set")
     }, function() {
-        w("/* clipboard write failed */")
+        xdialog.warn("clipboard write failed")
     })
 }
 
