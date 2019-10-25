@@ -8,6 +8,13 @@ if (document.readyState != "loading") {
     document.addEventListener("DOMContentLoaded", onReady)
 }
 
+function addEventListeners() {
+    window.addEventListener("focus", onFocusWindow)
+    document.getElementById("encode-button").addEventListener("click", onEncode)
+    document.getElementById("decode-button").addEventListener("click", onDecode)
+    document.getElementById("copy-button").addEventListener("click", onCopy)
+}
+
 function onReady() {
     addEventListeners()
     pasteClipboardText(tryEncodeOrDecode)
@@ -17,10 +24,26 @@ function onFocusWindow() {
     pasteClipboardText(tryEncodeOrDecode)
 }
 
-function addEventListeners() {
-    document.getElementById("encode-button").addEventListener("click", encode)
-    document.getElementById("decode-button").addEventListener("click", decode)
-    window.addEventListener("focus", onFocusWindow)
+function onEncode() {
+    let input = document.getElementById("input1").value
+    let output = encodeURIComponent(input)
+    document.getElementById("output1").value = output
+}
+
+function onDecode() {
+    let input = document.getElementById("input1").value
+    let output = decodeURIComponent(input)
+    document.getElementById("output1").value = output
+}
+
+function onCopy() {
+    let output = document.getElementById("output1").value
+
+    navigator.clipboard && navigator.clipboard.writeText(output).then(function() {
+        w("/* clipboard successfully set */")
+    }, function() {
+        w("/* clipboard write failed */")
+    })
 }
 
 function pasteClipboardText(onDone) {
@@ -28,18 +51,6 @@ function pasteClipboardText(onDone) {
         document.getElementById("input1").value = clipText
         onDone && onDone()
     })
-}
-
-function encode() {
-    let input = document.getElementById("input1").value
-    let output = encodeURIComponent(input)
-    document.getElementById("output1").value = output
-}
-
-function decode() {
-    let input = document.getElementById("input1").value
-    let output = decodeURIComponent(input)
-    document.getElementById("output1").value = output
 }
 
 function tryEncodeOrDecode() {
