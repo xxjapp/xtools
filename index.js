@@ -8,6 +8,12 @@ if (document.readyState != "loading") {
     document.addEventListener("DOMContentLoaded", onReady)
 }
 
+function adjustUI() {
+    if (navigator.clipboard) {
+        document.getElementById("copy-button").classList.remove("d-none")
+    }
+}
+
 function addEventListeners() {
     window.addEventListener("focus", onFocusWindow)
     document.getElementById("encode-button").addEventListener("click", onEncode)
@@ -16,6 +22,7 @@ function addEventListeners() {
 }
 
 function onReady() {
+    adjustUI()
     addEventListeners()
     pasteClipboardText(tryEncodeOrDecode)
 }
