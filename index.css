@@ -1,3 +1,28 @@
+.xt-navbar {
+    box-shadow: 0 0 5px gray;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.xt-navbar .navbar-brand {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.xt-navbar .navbar-toggler {
+    color: #212529;
+    border: 0;
+    padding: 1rem;
+}
+
+.xt-navbar .navbar-toggler:focus {
+    outline: none;
+}
+
+.text-github {
+    color: #333!important;
+}
+
 .form-group {
     background: #eee;
     padding: 1rem;

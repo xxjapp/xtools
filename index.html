@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xxjapp/xdialog@3/xdialog.min.css">
 
     <link rel="stylesheet" href="index.css">
@@ -17,11 +18,34 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light xt-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="./">
+                <img src="assets/xtool.png" alt="xtools Logo">
+                <span class="ml-1">xtools</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto pt-3 pt-lg-0">
+                </ul>
+                <ul class="navbar-nav pb-3 pb-lg-0">
+                    <li class="nav-item d-none d-lg-inline-block">
+                        <a href="https://github.com/xxjapp/xtools" class="nav-link text-github">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <!-- Content here -->
-        <h1>xtools</h1>
-
-        <h5>URL Encoder / Decoder</h5>
+        <div class="row pt-3">
+            <h5>URL Encoder / Decoder</h5>
+        </div>
 
         <form>
             <div class="form-group">
