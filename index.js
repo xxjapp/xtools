@@ -62,9 +62,16 @@ function pasteClipboardText(onDone) {
 
 function tryEncodeOrDecode() {
     let input = document.getElementById("input1").value
-    let output = decodeURIComponent(input)
+    let output = null
 
-    if (input === output) {
+    try {
+        output = decodeURIComponent(input)
+    } catch {
+        // OK: can not be decoded
+    }
+
+    // if input can not be decoded or decoded to the same result, try to encode input
+    if (!output || input === output) {
         output = encodeURIComponent(input)
     }
 
