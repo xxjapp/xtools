@@ -57,6 +57,9 @@ function pasteClipboardText(onDone) {
     navigator.clipboard && navigator.clipboard.readText().then(function(clipText) {
         document.getElementById("input1").value = clipText
         onDone && onDone()
+    }).catch(function(error) {
+        // catch and output the error
+        w(error)
     })
 }
 
