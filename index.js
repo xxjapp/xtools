@@ -38,6 +38,9 @@ function onLoadPart() {
     // append html
     main.innerHTML = split[0]
 
+    // set title
+    document.title = document.querySelector(".xt-title").textContent + " | xtools"
+
     // no script, return
     if (!split[1]) {
         return
