@@ -5,8 +5,11 @@
 }
 
 .xt-navbar .navbar-brand {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-weight: 500;
+}
+
+.xt-navbar .navbar-brand span {
+    vertical-align: middle;
 }
 
 .xt-navbar .navbar-toggler {
