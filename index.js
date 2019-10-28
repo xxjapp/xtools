@@ -1,82 +1,64 @@
 "use strict"
 
+// define w for the convenience
 window.w = window.w || console.warn.bind(console)
 
+// call onReady
 if (document.readyState != "loading") {
     onReady()
 } else {
     document.addEventListener("DOMContentLoaded", onReady)
 }
 
-function adjustUI() {
-    if (navigator.clipboard) {
-        document.getElementById("copy-button").classList.remove("d-none")
-    }
-}
-
-function addEventListeners() {
-    window.addEventListener("focus", onFocusWindow)
-    document.getElementById("encode-button").addEventListener("click", onEncode)
-    document.getElementById("decode-button").addEventListener("click", onDecode)
-    document.getElementById("copy-button").addEventListener("click", onCopy)
-}
-
 function onReady() {
-    adjustUI()
-    addEventListeners()
-    pasteClipboardText(tryEncodeOrDecode)
+    // init partObject
+    window.partObject = null
+
+    // load part
+    let partName = utils.parseQueryString(window.location.href).p || "main"
+    loadPart(partName)
+
+    // add event listeners
+    window.addEventListener("focus", onFocusWindow)
+    window.addEventListener("blur", onBlurWindow)
+}
+
+function loadPart(partName) {
+    let xhr = new XMLHttpRequest()
+    xhr.addEventListener("load", onLoadPart)
+    xhr.open("GET", "parts/" + partName + ".part.html")
+    xhr.send()
+}
+
+function onLoadPart() {
+    let xhr = this
+    let split = xhr.responseText.split(/<\/?script>/)
+    let main = document.getElementById("main")
+
+    // append html
+    main.innerHTML = split[0]
+
+    // no script, return
+    if (!split[1]) {
+        return
+    }
+
+    // append script
+    // SEE: https://stackoverflow.com/a/7054216/1440174
+    let script = document.createElement("script")
+    script.text = split[1]
+
+    main.parentNode.insertBefore(script, main)
+
+    // init and active part
+    partObject.init()
+    partObject.activate()
 }
 
 function onFocusWindow() {
-    pasteClipboardText(tryEncodeOrDecode)
+    partObject && partObject.activate()
 }
 
-function onEncode() {
-    let input = document.getElementById("input1").value
-    let output = encodeURIComponent(input)
-    document.getElementById("output1").value = output
-}
-
-function onDecode() {
-    let input = document.getElementById("input1").value
-    let output = decodeURIComponent(input)
-    document.getElementById("output1").value = output
-}
-
-function onCopy() {
-    let output = document.getElementById("output1").value
-
-    navigator.clipboard && navigator.clipboard.writeText(output).then(function() {
-        xdialog.info("clipboard successfully set")
-    }, function() {
-        xdialog.warn("clipboard write failed")
-    })
-}
-
-function pasteClipboardText(onDone) {
-    navigator.clipboard && navigator.clipboard.readText().then(function(clipText) {
-        document.getElementById("input1").value = clipText
-        onDone && onDone()
-    }).catch(function(error) {
-        // catch and output the error
-        w(error)
-    })
-}
-
-function tryEncodeOrDecode() {
-    let input = document.getElementById("input1").value
-    let output = null
-
-    try {
-        output = decodeURIComponent(input)
-    } catch {
-        // OK: can not be decoded
-    }
-
-    // if input can not be decoded or decoded to the same result, try to encode input
-    if (!output || input === output) {
-        output = encodeURIComponent(input)
-    }
-
-    document.getElementById("output1").value = output
+function onBlurWindow() {
+    partObject && partObject.deactivate()
 }

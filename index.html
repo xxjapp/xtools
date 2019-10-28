@@ -20,7 +20,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light xt-navbar">
         <div class="container">
-            <a class="navbar-brand" href="./">
+            <a class="navbar-brand" href=".">
                 <img src="assets/xtool.png" alt="xtools Logo">
                 <span class="ml-1">xtools</span>
             </a>
@@ -29,6 +29,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto pt-3 pt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="?p=url_encode_decode">Url Encoder & Decoder</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav pb-3 pb-lg-0">
                     <li class="nav-item d-none d-lg-inline-block">
@@ -41,28 +44,8 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container" id="main">
         <!-- Content here -->
-        <div class="row pt-3">
-            <h5>URL Encoder / Decoder</h5>
-        </div>
-
-        <form>
-            <div class="form-group">
-                <label for="input1">Copy-paste the string to encode or decode here</label>
-                <textarea class="form-control" id="input1" rows="6"></textarea>
-            </div>
-
-            <button type="button" class="btn btn-primary" id="encode-button">Encode</button>
-            <button type="button" class="btn btn-primary" id="decode-button">Decode</button>
-
-            <div class="form-group">
-                <label for="output1">output</label>
-                <textarea class="form-control" id="output1" rows="6"></textarea>
-            </div>
-
-            <button type="button" class="btn btn-primary d-none" id="copy-button">Copy</button>
-        </form>
     </div>
 
     <!-- Optional JavaScript -->
@@ -73,6 +56,7 @@
 
     <script src="https://cdn.jsdelivr.net/gh/xxjapp/xdialog@3/xdialog.min.js"></script>
 
+    <script src="utils.js"></script>
     <script src="index.js"></script>
 </body>
 

@@ -1,0 +1,106 @@
+<div>
+    <div class="row pt-3">
+        <h5>URL Encoder / Decoder</h5>
+    </div>
+
+    <form>
+        <div class="form-group">
+            <label for="input1">Copy-paste the string to encode or decode here</label>
+            <textarea class="form-control" id="input1" rows="6"></textarea>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="encode-button">Encode</button>
+        <button type="button" class="btn btn-primary" id="decode-button">Decode</button>
+
+        <div class="form-group">
+            <label for="output1">output</label>
+            <textarea class="form-control" id="output1" rows="6"></textarea>
+        </div>
+
+        <button type="button" class="btn btn-primary d-none" id="copy-button">Copy</button>
+    </form>
+</div>
+
+<script>
+    "use strict"
+
+    window.partObject = (function() {
+        return {
+            init: init,
+            activate: activate,
+            deactivate: deactivate
+        }
+
+        function init() {
+            if (navigator.clipboard) {
+                document.getElementById("copy-button").classList.remove("d-none")
+            }
+        }
+
+        function activate() {
+            document.getElementById("encode-button").addEventListener("click", onEncode)
+            document.getElementById("decode-button").addEventListener("click", onDecode)
+            document.getElementById("copy-button").addEventListener("click", onCopy)
+
+            // auto paste clipboard text
+            pasteClipboardText(tryEncodeOrDecode)
+        }
+
+        function deactivate() {
+            document.getElementById("encode-button").removeEventListener("click", onEncode)
+            document.getElementById("decode-button").removeEventListener("click", onDecode)
+            document.getElementById("copy-button").removeEventListener("click", onCopy)
+        }
+
+        function onEncode() {
+            let input = document.getElementById("input1").value
+            let output = encodeURIComponent(input)
+            document.getElementById("output1").value = output
+        }
+
+        function onDecode() {
+            let input = document.getElementById("input1").value
+            let output = decodeURIComponent(input)
+            document.getElementById("output1").value = output
+        }
+
+        function onCopy() {
+            let output = document.getElementById("output1").value
+
+            navigator.clipboard && navigator.clipboard.writeText(output).then(function() {
+                xdialog.info("clipboard successfully set")
+            }, function() {
+                xdialog.warn("clipboard write failed")
+            })
+        }
+
+        function pasteClipboardText(onDone) {
+            navigator.clipboard && navigator.clipboard.readText().then(function(clipText) {
+                document.getElementById("input1").value = clipText
+                onDone && onDone()
+            }).catch(function(error) {
+                // catch and output the error
+                w(error)
+            })
+        }
+
+        function tryEncodeOrDecode() {
+            let input = document.getElementById("input1").value
+            let output = null
+
+            try {
+                output = decodeURIComponent(input)
+            } catch (err) {
+                // OK: can not be decoded
+            }
+
+            // if input can not be decoded or decoded to the same result, try to encode input
+            if (!output || input === output) {
+                output = encodeURIComponent(input)
+            }
+
+            document.getElementById("output1").value = output
+        }
+    })()
+
+</script>
