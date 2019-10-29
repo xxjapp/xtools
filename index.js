@@ -15,7 +15,7 @@ function onReady() {
     window.partObject = null
 
     // load part
-    let partName = utils.parseQueryString(window.location.href).p || "main"
+    let partName = utils.parseQueryString(window.location.href).p || "home"
     loadPart(partName)
 
     // add event listeners
