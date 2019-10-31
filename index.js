@@ -39,7 +39,11 @@ function onLoadPart() {
     main.innerHTML = split[0]
 
     // set title
-    document.title = document.querySelector(".xt-title").textContent + " | xtools"
+    try {
+        document.title = document.querySelector(".xt-title").textContent + " | xtools"
+    } catch (error) {
+        document.title = "Error" + " | xtools"
+    }
 
     // no script, return
     if (!split[1]) {
