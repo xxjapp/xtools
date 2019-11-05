@@ -1,16 +1,30 @@
+<style>
+    .slider.slider-horizontal {
+        width: 100%;
+    }
+
+    .slider-selection {
+        background: pink;
+        box-shadow: unset;
+    }
+
+    .slider-handle {
+        background: lightpink;
+        box-shadow: 0 0 5px grey;
+    }
+
+</style>
+
 <div>
     <div class="row pt-3">
-        <h5 class="xt-title">URL Encoder / Decoder</h5>
+        <h5 class="xt-title">Password Generator</h5>
     </div>
 
     <form>
         <div class="form-group">
-            <label for="input1">Copy-paste the string to encode or decode here</label>
-            <textarea class="form-control" id="input1" rows="6"></textarea>
+            <label for="range1"></label>
+            <input id="range1" type="range" data-slider-min="4" data-slider-max="64" data-slider-step="1" data-slider-value="8" />
         </div>
-
-        <button type="button" class="btn btn-primary" id="encode-button">Encode</button>
-        <button type="button" class="btn btn-primary" id="decode-button">Decode</button>
 
         <div class="form-group">
             <label for="output1">output</label>
@@ -35,33 +49,23 @@
             if (navigator.clipboard) {
                 document.getElementById("copy-button").classList.remove("d-none")
             }
+
+            // NOTE: tooltip not work with bootstrap 4
+            // SEE: https://github.com/seiyria/bootstrap-slider/issues/689
+            // SEE: https://github.com/seiyria/bootstrap-slider#options
+            let slider1 = new Slider('#range1', {
+                tooltip: 'hide'
+            }).on('change', onChangeSlide)
+
+            updateLengthLabel(slider1.getValue())
         }
 
         function activate() {
-            document.getElementById("encode-button").addEventListener("click", onEncode)
-            document.getElementById("decode-button").addEventListener("click", onDecode)
             document.getElementById("copy-button").addEventListener("click", onCopy)
-
-            // auto paste clipboard text
-            pasteClipboardText(tryEncodeOrDecode)
         }
 
         function deactivate() {
-            document.getElementById("encode-button").removeEventListener("click", onEncode)
-            document.getElementById("decode-button").removeEventListener("click", onDecode)
             document.getElementById("copy-button").removeEventListener("click", onCopy)
-        }
-
-        function onEncode() {
-            let input = document.getElementById("input1").value
-            let output = encodeURIComponent(input)
-            document.getElementById("output1").value = output
-        }
-
-        function onDecode() {
-            let input = document.getElementById("input1").value
-            let output = decodeURIComponent(input)
-            document.getElementById("output1").value = output
         }
 
         function onCopy() {
@@ -74,32 +78,12 @@
             })
         }
 
-        function pasteClipboardText(onDone) {
-            navigator.clipboard && navigator.clipboard.readText().then(function(clipText) {
-                document.getElementById("input1").value = clipText
-                onDone && onDone()
-            }).catch(function(error) {
-                // catch and output the error
-                w(error)
-            })
+        function onChangeSlide(e) {
+            updateLengthLabel(e.newValue)
         }
 
-        function tryEncodeOrDecode() {
-            let input = document.getElementById("input1").value
-            let output = null
-
-            try {
-                output = decodeURIComponent(input)
-            } catch (err) {
-                // OK: can not be decoded
-            }
-
-            // if input can not be decoded or decoded to the same result, try to encode input
-            if (!output || input === output) {
-                output = encodeURIComponent(input)
-            }
-
-            document.getElementById("output1").value = output
+        function updateLengthLabel(length) {
+            document.querySelector('[for="range1"]').textContent = "Length: " + length
         }
     })()
 
