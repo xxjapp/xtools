@@ -35,21 +35,20 @@
             if (navigator.clipboard) {
                 document.getElementById("copy-button").classList.remove("d-none")
             }
-        }
 
-        function activate() {
+            // add event listeners
             document.getElementById("encode-button").addEventListener("click", onEncode)
             document.getElementById("decode-button").addEventListener("click", onDecode)
             document.getElementById("copy-button").addEventListener("click", onCopy)
+        }
 
+        function activate() {
             // auto paste clipboard text
             pasteClipboardText(tryEncodeOrDecode)
         }
 
         function deactivate() {
-            document.getElementById("encode-button").removeEventListener("click", onEncode)
-            document.getElementById("decode-button").removeEventListener("click", onDecode)
-            document.getElementById("copy-button").removeEventListener("click", onCopy)
+            // do nothing
         }
 
         function onEncode() {
