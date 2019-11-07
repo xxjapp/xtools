@@ -32,11 +32,14 @@ function loadPart(partName) {
 
 function onLoadPart() {
     let xhr = this
-    let split = xhr.responseText.split(/<\/?script>/)
+
+    // split by inline script open tag
+    // NOTE: inline script element should be only one per part
+    let segments = xhr.responseText.split("<script>")
     let main = document.getElementById("main")
 
     // append html
-    main.innerHTML = split[0]
+    main.innerHTML = segments[0]
 
     // set title
     try {
@@ -46,20 +49,22 @@ function onLoadPart() {
     }
 
     // no script, return
-    if (!split[1]) {
+    if (!segments[1]) {
         return
     }
 
     // append script
     // SEE: https://stackoverflow.com/a/7054216/1440174
-    let script = document.createElement("script")
-    script.text = split[1]
+    let scriptElement = document.createElement("script")
+    scriptElement.text = segments[1].split("</script>")[0]
 
-    main.parentNode.insertBefore(script, main)
+    document.body.appendChild(scriptElement)
 
     // init and active part
-    partObject.init()
-    partObject.activate()
+    if (partObject) {
+        partObject.init()
+        partObject.activate()
+    }
 }
 
 function onFocusWindow() {
