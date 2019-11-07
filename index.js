@@ -36,6 +36,7 @@ function onLoadPart() {
     // split by inline script open tag
     // NOTE: inline script element should be only one per part
     let segments = xhr.responseText.split("<script>")
+    handleScripts(xhr.responseText)
     let main = document.getElementById("main")
 
     // append html
@@ -64,6 +65,30 @@ function onLoadPart() {
     if (partObject) {
         partObject.init()
         partObject.activate()
+    }
+}
+
+function handleScripts(htmlText) {
+    const rnd = String(Math.random())
+
+    let result = {
+        scripts: []
+    }
+
+    result.html = unescape(escape(htmlText).replace(/<script.*?<\/script>/g, function(match) {
+        result.scripts.push(unescape(match))
+        return ""
+    }))
+
+    w(result)
+    return result
+
+    function escape(text) {
+        return text.replace(/\r?\n/g, rnd)
+    }
+
+    function unescape(text) {
+        return text.split(rnd).join("\n")
     }
 }
 
