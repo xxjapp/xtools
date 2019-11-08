@@ -60,7 +60,7 @@ function onLoadPart(e) {
             appendExternalScript(script, function() {
                 n--
 
-                if (n == 0) {
+                if (n === 0) {
                     onAllExternalScriptLoaded()
                 }
             })
