@@ -52,19 +52,32 @@ function onLoadPart(e) {
         document.title = "Error" + " | xtools"
     }
 
-    // append scripts
-    segments.scripts.forEach(function(script) {
-        if (script.startsWith("<script ")) {
-            appendExternalScript(script)
-        } else {
-            appendInlineScript(script)
-        }
-    })
+    // append external scripts
+    let n = segments.scripts.external.length
 
-    // init and active part
-    if (partObject) {
-        partObject.init()
-        partObject.activate()
+    if (n > 0) {
+        segments.scripts.external.forEach(function(script) {
+            appendExternalScript(script, function() {
+                n--
+
+                if (n == 0) {
+                    onAllExternalScriptLoaded()
+                }
+            })
+        })
+    } else {
+        onAllExternalScriptLoaded()
+    }
+
+    // append inline scripts
+    segments.scripts.inline.forEach(appendInlineScript)
+
+    // init part: do not call external script function here
+    partObject && partObject.init()
+
+    function onAllExternalScriptLoaded() {
+        // active part: safe to call external script function here
+        partObject && partObject.activate()
     }
 }
 
@@ -73,11 +86,22 @@ function parseHtmlText(htmlText) {
     const sep = String(Math.random())
 
     let result = {
-        scripts: []
+        html: "",
+        scripts: {
+            external: [],
+            inline: []
+        }
     }
 
     result.html = unescape(escape(htmlText).replace(/<script( |>).*?<\/script>/g, function(match) {
-        result.scripts.push(unescape(match))
+        let script = unescape(match)
+
+        if (script.startsWith("<script ")) {
+            result.scripts.external.push(script)
+        } else {
+            result.scripts.inline.push(script)
+        }
+
         return ""
     }))
 
@@ -93,8 +117,10 @@ function parseHtmlText(htmlText) {
 }
 
 // SEE: https://stackoverflow.com/questions/28901166/how-do-i-add-the-crossorigin-tag-to-a-dynamically-loaded-script/28907499
-function appendExternalScript(script) {
+function appendExternalScript(script, onScriptLoad) {
     let scriptElement = document.createElement("script")
+
+    scriptElement.onload = onScriptLoad
 
     script.split(/<script |><\/script>/)[1].replace(/(\w+)="(.*?)"/g, function(_, p1, p2) {
         scriptElement.setAttribute(p1, p2)
