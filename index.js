@@ -76,7 +76,7 @@ function onLoadPart(e) {
     partObject && partObject.init()
 
     function onAllExternalScriptLoaded() {
-        // active part: safe to call external script function here
+        // activate part: safe to call external script function here
         partObject && partObject.activate()
     }
 }
