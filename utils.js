@@ -46,7 +46,7 @@ window.utils = (function() {
 
         // handle task every 100ms
         taskCtx.iid = setInterval(handleTask, 100);
-        w("setInterval: " + taskCtx.iid)
+        // w("setInterval: " + taskCtx.iid)
 
         function handleTask() {
             if (taskCtx.isBuzy) {
@@ -60,7 +60,7 @@ window.utils = (function() {
                 // stop running and cleanup on 100 idles
                 if (taskCtx.idleCnt === 100) {
                     clearInterval(taskCtx.iid)
-                    w("clearInterval: " + taskCtx.iid)
+                    // w("clearInterval: " + taskCtx.iid)
                     cleanupTaskContext()
                 }
 
@@ -72,7 +72,7 @@ window.utils = (function() {
             let lastParam = taskCtx.queue.pop()
 
             if (taskCtx.queue.length > 0) {
-                w("skipped " + taskCtx.queue.length + " tasks!")
+                // w("skipped " + taskCtx.queue.length + " tasks!")
                 taskCtx.queue = []
             }
 
