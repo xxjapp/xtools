@@ -23,6 +23,14 @@ function onReady() {
     window.addEventListener("blur", onBlurWindow)
 }
 
+function onFocusWindow() {
+    partObject && partObject.activate()
+}
+
+function onBlurWindow() {
+    partObject && partObject.deactivate()
+}
+
 function loadPart(partName) {
     let xhr = new XMLHttpRequest()
     xhr.addEventListener("load", onLoadPart)
@@ -30,17 +38,12 @@ function loadPart(partName) {
     xhr.send()
 }
 
-function onLoadPart() {
-    let xhr = this
-
-    // split by inline script open tag
-    // NOTE: inline script element should be only one per part
-    let segments = xhr.responseText.split("<script>")
-    handleScripts(xhr.responseText)
+function onLoadPart(e) {
+    let segments = parseHtmlText(e.target.responseText)
     let main = document.getElementById("main")
 
     // append html
-    main.innerHTML = segments[0]
+    main.innerHTML = segments.html
 
     // set title
     try {
@@ -49,17 +52,14 @@ function onLoadPart() {
         document.title = "Error" + " | xtools"
     }
 
-    // no script, return
-    if (!segments[1]) {
-        return
-    }
-
-    // append script
-    // SEE: https://stackoverflow.com/a/7054216/1440174
-    let scriptElement = document.createElement("script")
-    scriptElement.text = segments[1].split("</script>")[0]
-
-    document.body.appendChild(scriptElement)
+    // append scripts
+    segments.scripts.forEach(function(script) {
+        if (script.startsWith("<script ")) {
+            appendExternalScript(script)
+        } else {
+            appendInlineScript(script)
+        }
+    })
 
     // init and active part
     if (partObject) {
@@ -68,34 +68,44 @@ function onLoadPart() {
     }
 }
 
-function handleScripts(htmlText) {
-    const rnd = String(Math.random())
+// seperate scripts and other part
+function parseHtmlText(htmlText) {
+    const sep = String(Math.random())
 
     let result = {
         scripts: []
     }
 
-    result.html = unescape(escape(htmlText).replace(/<script.*?<\/script>/g, function(match) {
+    result.html = unescape(escape(htmlText).replace(/<script( |>).*?<\/script>/g, function(match) {
         result.scripts.push(unescape(match))
         return ""
     }))
 
-    w(result)
     return result
 
     function escape(text) {
-        return text.replace(/\r?\n/g, rnd)
+        return text.replace(/\r?\n/g, sep)
     }
 
     function unescape(text) {
-        return text.split(rnd).join("\n")
+        return text.split(sep).join("\n")
     }
 }
 
-function onFocusWindow() {
-    partObject && partObject.activate()
+// SEE: https://stackoverflow.com/questions/28901166/how-do-i-add-the-crossorigin-tag-to-a-dynamically-loaded-script/28907499
+function appendExternalScript(script) {
+    let scriptElement = document.createElement("script")
+
+    script.split(/<script |><\/script>/)[1].replace(/(\w+)="(.*?)"/g, function(_, p1, p2) {
+        scriptElement.setAttribute(p1, p2)
+    })
+
+    document.body.appendChild(scriptElement)
 }
 
-function onBlurWindow() {
-    partObject && partObject.deactivate()
+// SEE: https://stackoverflow.com/a/7054216/1440174
+function appendInlineScript(script) {
+    let scriptElement = document.createElement("script")
+    scriptElement.text = script.split(/<\/?script>/)[1]
+    document.body.appendChild(scriptElement)
 }
