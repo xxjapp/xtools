@@ -52,6 +52,9 @@ function onLoadPart(e) {
         document.title = "Error" + " | xtools"
     }
 
+    // append inline scripts
+    segments.scripts.inline.forEach(appendInlineScript)
+
     // append external scripts
     let n = segments.scripts.external.length
 
@@ -68,9 +71,6 @@ function onLoadPart(e) {
     } else {
         onAllExternalScriptLoaded()
     }
-
-    // append inline scripts
-    segments.scripts.inline.forEach(appendInlineScript)
 
     // init part: do not call external script function here
     partObject && partObject.init()
