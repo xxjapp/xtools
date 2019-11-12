@@ -46,7 +46,7 @@
         <h5 class="xt-title">Server List</h5>
     </div>
 
-    <div class="action-button noselect"> + </div>
+    <div class="action-button noselect" id="add-button"> + </div>
 </div>
 
 <script>
@@ -60,7 +60,8 @@
         }
 
         function init() {
-            // do nothing
+            // add event listeners
+            document.getElementById("add-button").addEventListener("click", onClickAdd)
         }
 
         function activate() {
@@ -69,6 +70,10 @@
 
         function deactivate() {
             // do nothing
+        }
+
+        function onClickAdd(e) {
+            w(e)
         }
 
         function pasteClipboardText(onDone) {

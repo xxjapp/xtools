@@ -59,7 +59,7 @@ window.utils = (function() {
 
                 // stop running and cleanup on 100 idles
                 if (taskCtx.idleCnt === 100) {
-                    clearInterval(taskCtx.iid)
+                    clearInterval(taskCtx.iid);
                     // w("clearInterval: " + taskCtx.iid)
                     cleanupTaskContext()
                 }
