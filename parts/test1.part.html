@@ -73,7 +73,40 @@
         }
 
         function onClickAdd(e) {
-            w(e)
+            xdialog.open({
+                title: 'Login Demo',
+                body: '\
+                    <style>\
+                        .demo1-mb-1 { margin-bottom: 1em; }\
+                        .demo1-row { text-align: center; }\
+                        .demo1-row label { min-width: 6em; display: inline-block; text-align: right; margin-right: 0.5em; }\
+                        .demo1-row input { padding: 0.3em; outline: none; min-width: 12em; }\
+                        .demo1-validated input { border: green 2px solid; }\
+                        .demo1-validated input:invalid { border: red 2px solid; }\
+                    </style>\
+                    <div id="demo1-form">\
+                        <div class="demo1-row demo1-mb-1"><label for="uname">User Name</label><input type="text" id="uname" required></div>\
+                        <div class="demo1-row"><label for="psw">Password</label><input type="password" id="psw" required></div>\
+                    </div>',
+                buttons: {
+                    ok: 'Login',
+                    cancel: 'Cancel'
+                },
+                effect: '3d_rotate_bottom',
+                style: 'width: 25em;',
+                onok: function() {
+                    document.getElementById('demo1-form').classList.add('demo1-validated');
+
+                    let uname = document.getElementById('uname').value;
+                    let psw = document.getElementById('psw').value;
+
+                    if (!uname || !psw) {
+                        return false;
+                    }
+
+                    xdialog.alert('Welcome, ' + uname);
+                }
+            });
         }
 
         function pasteClipboardText(onDone) {
