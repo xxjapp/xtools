@@ -36,48 +36,51 @@ function loadPart(partName) {
     xhr.addEventListener("load", onLoadPart)
     xhr.open("GET", "parts/" + partName + ".part.html")
     xhr.send()
-}
 
-function onLoadPart(e) {
-    let segments = parseHtmlText(e.target.responseText)
-    let main = document.getElementById("main")
+    function onLoadPart(e) {
+        let segments = parseHtmlText(e.target.responseText)
+        let main = document.getElementById("main")
 
-    // append html
-    main.innerHTML = segments.html
+        // append html
+        main.innerHTML = segments.html
 
-    // set title
-    try {
-        document.title = document.querySelector(".xt-title").textContent + " | xtools"
-    } catch (error) {
-        document.title = "Error" + " | xtools"
-    }
+        // set title
+        try {
+            document.title = document.querySelector(".xt-title").textContent + " | xtools"
+        } catch (error) {
+            document.title = "Error" + " | xtools"
+        }
 
-    // append inline scripts
-    segments.scripts.inline.forEach(appendInlineScript)
+        // set nav-item style
+        document.querySelector('[href="?p=' + partName + '"]').classList.add("xt-nav-link-active");
 
-    // init part: do not call external script function here
-    partObject && partObject.init()
+        // append inline scripts
+        segments.scripts.inline.forEach(appendInlineScript)
 
-    // append external scripts
-    let n = segments.scripts.external.length
+        // init part: do not call external script function here
+        partObject && partObject.init()
 
-    if (n > 0) {
-        segments.scripts.external.forEach(function(script) {
-            appendExternalScript(script, function() {
-                n--
+        // append external scripts
+        let n = segments.scripts.external.length
 
-                if (n === 0) {
-                    onAllExternalScriptLoaded()
-                }
+        if (n > 0) {
+            segments.scripts.external.forEach(function(script) {
+                appendExternalScript(script, function() {
+                    n--
+
+                    if (n === 0) {
+                        onAllExternalScriptLoaded()
+                    }
+                })
             })
-        })
-    } else {
-        onAllExternalScriptLoaded()
-    }
+        } else {
+            onAllExternalScriptLoaded()
+        }
 
-    function onAllExternalScriptLoaded() {
-        // activate part: safe to call external script function here
-        partObject && partObject.activate()
+        function onAllExternalScriptLoaded() {
+            // activate part: safe to call external script function here
+            partObject && partObject.activate()
+        }
     }
 }
 

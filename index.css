@@ -26,6 +26,11 @@
     margin-left: 1rem;
 }
 
+.xt-nav-link-active {
+    text-shadow: 0 0 1px yellowgreen;
+    font-weight: 500;
+}
+
 .text-github {
     color: black !important;
 }
