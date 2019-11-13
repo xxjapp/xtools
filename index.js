@@ -55,6 +55,9 @@ function onLoadPart(e) {
     // append inline scripts
     segments.scripts.inline.forEach(appendInlineScript)
 
+    // init part: do not call external script function here
+    partObject && partObject.init()
+
     // append external scripts
     let n = segments.scripts.external.length
 
@@ -71,9 +74,6 @@ function onLoadPart(e) {
     } else {
         onAllExternalScriptLoaded()
     }
-
-    // init part: do not call external script function here
-    partObject && partObject.init()
 
     function onAllExternalScriptLoaded() {
         // activate part: safe to call external script function here
