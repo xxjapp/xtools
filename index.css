@@ -27,7 +27,7 @@
 }
 
 .xt-nav-link-active {
-    text-shadow: 0 0 1px yellowgreen;
+    text-shadow: 0 0 20px yellowgreen;
     font-weight: 500;
 }
 

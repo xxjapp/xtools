@@ -52,7 +52,8 @@ function loadPart(partName) {
         }
 
         // set nav-item style
-        document.querySelector('[href="?p=' + partName + '"]').classList.add("xt-nav-link-active");
+        let navItem = document.querySelector('[href="?p=' + partName + '"]')
+        navItem && navItem.classList.add("xt-nav-link-active");
 
         // append inline scripts
         segments.scripts.inline.forEach(appendInlineScript)
