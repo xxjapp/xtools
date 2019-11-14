@@ -59,6 +59,21 @@
         margin-right: 0.5rem;
     }
 
+    a.delete-button img {
+        position: absolute;
+        opacity: 0;
+        right: -8px;
+        top: -8px;
+        transition: all .3s ease-in-out;
+        z-index: 99;
+    }
+
+    .xt-server-item:hover a.delete-button img {
+        opacity: 1;
+        top: 4px;
+        right: 4px;
+    }
+
 </style>
 <div>
     <div class="row pt-3">
@@ -144,6 +159,14 @@
             });
         }
 
+        function onClickDelete(e) {
+            e.preventDefault();
+
+            let key = e.target.parentElement.parentElement.textContent.trim();
+            deleteServer(key);
+            updateServerList();
+        }
+
         function updateServerList() {
             let serverListElement = document.getElementById("server-list1");
 
@@ -156,9 +179,19 @@
                 let serverElement = document.createElement("div");
                 serverElement.classList.add("col");
                 serverElement.classList.add("xt-server-item");
-                serverElement.innerHTML = '<i class="fas fa-server">' + key + '</i>';
+                serverElement.innerHTML = '<i class="fas fa-server">' + key + deleteButtonHtml() + '</i>';
                 serverListElement.append(serverElement);
             });
+
+            [].slice.call(document.querySelectorAll(".delete-button")).forEach(function(button) {
+                button.addEventListener("click", onClickDelete);
+            });
+        }
+
+        function deleteButtonHtml() {
+            return '<a class="delete-button" href="#">\
+                <img src="./assets/delete.svg" style="width:40px;height:40px;">\
+            </a>';
         }
 
         function pasteClipboardText(onDone) {
@@ -185,6 +218,12 @@
 
             saveSettings()
             xdialog.info('Successfully added')
+        }
+
+        function deleteServer(key) {
+            delete _settings.servers[key];
+            saveSettings();
+            xdialog.info('Successfully deleted');
         }
 
         function saveSettings() {
