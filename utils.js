@@ -3,7 +3,8 @@
 window.utils = (function() {
     return {
         parseQueryString: parseQueryString,
-        sendSkippableTask: sendSkippableTask
+        sendSkippableTask: sendSkippableTask,
+        evaluateXPath: evaluateXPath
     }
 
     function parseQueryString(url) {
@@ -89,13 +90,32 @@ window.utils = (function() {
             taskCtx.iid = null
         }
     }
+
+    // Evaluate an XPath expression aExpression against a given DOM node
+    // or Document object (aNode), returning the results as an array
+    // thanks wanderingstan at morethanwarm dot mail dot com for the
+    // initial work.
+    // SEE: https://developer.mozilla.org/en-US/docs/Web/XPath/Snippets
+    function evaluateXPath(aNode, aExpr) {
+        let xpe = new XPathEvaluator();
+        let nsResolver = xpe.createNSResolver(aNode.ownerDocument == null ? aNode.documentElement : aNode.ownerDocument.documentElement);
+        let result = xpe.evaluate(aExpr, aNode, nsResolver, 0, null);
+        let found = [];
+        let res;
+
+        while (res = result.iterateNext()) {
+            found.push(res);
+        }
+
+        return found;
+    }
 })()
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
 if (!String.prototype.startsWith) {
     Object.defineProperty(String.prototype, 'startsWith', {
         value: function(search, rawPos) {
-            var pos = rawPos > 0 ? rawPos | 0 : 0;
+            let pos = rawPos > 0 ? rawPos | 0 : 0;
             return this.substring(pos, pos + search.length) === search;
         }
     });

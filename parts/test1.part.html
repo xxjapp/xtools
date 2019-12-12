@@ -50,6 +50,7 @@
     }
 
     .xt-server-item:hover {
+        cursor: pointer;
         text-decoration: none;
         box-shadow: 0 0 10px grey;
     }
@@ -127,7 +128,7 @@
                         .test1-validated input { border: green 2px solid; }\
                         .test1-validated input:invalid { border: red 2px solid; }\
                     </style>\
-                    <div id="test1-form">\
+                    <div id="test1-form-1">\
                         <div class="test1-row test1-mb-1">\
                             <label for="host1">Host</label>\
                             <input type="text" id="host1" required spellcheck="false">\
@@ -144,7 +145,7 @@
                 effect: '3d_rotate_bottom',
                 style: 'width: 28em;',
                 onok: function() {
-                    document.getElementById('test1-form').classList.add('test1-validated');
+                    document.getElementById('test1-form-1').classList.add('test1-validated');
 
                     let host = document.getElementById('host1').value;
                     let port = document.getElementById('port1').value;
@@ -161,10 +162,64 @@
 
         function onClickDelete(e) {
             e.preventDefault();
+            e.stopPropagation();
 
             let key = e.target.parentElement.parentElement.textContent.trim();
             deleteServer(key);
             updateServerList();
+        }
+
+        function onClickServerElement(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            let key = e.target.parentElement.textContent.trim();
+
+            xdialog.open({
+                title: 'Sign in',
+                body: '\
+                    <style>\
+                        .test1-mb-1 { margin-bottom: 1em; }\
+                        .test1-row { text-align: center; }\
+                        .test1-row label { min-width: 5em; display: inline-block; text-align: right; margin-right: 1em; }\
+                        .test1-row input { padding: 0.3em; outline: none; min-width: 16em; }\
+                        .test1-validated input { border: green 2px solid; }\
+                        .test1-validated input:invalid { border: red 2px solid; }\
+                    </style>\
+                    <div id="test1-form-2">\
+                        <div class="test1-row test1-mb-1">\
+                            <label for="kcode">Kigyo Code</label>\
+                            <input type="text" id="kcode" required spellcheck="false">\
+                        </div>\
+                        <div class="test1-row test1-mb-1">\
+                            <label for="userid">User ID</label>\
+                            <input type="text" id="userid" required spellcheck="false">\
+                        </div>\
+                        <div class="test1-row">\
+                            <label for="psw">Password</label>\
+                            <input type="password" id="psw" required spellcheck="false">\
+                        </div>\
+                    </div>',
+                buttons: {
+                    ok: 'Sign in',
+                    cancel: 'Cancel'
+                },
+                effect: '3d_rotate_bottom',
+                style: 'width: 28em;',
+                onok: function() {
+                    document.getElementById('test1-form-2').classList.add('test1-validated');
+
+                    let kcode = document.getElementById('kcode').value;
+                    let userid = document.getElementById('userid').value;
+                    let psw = document.getElementById('psw').value;
+
+                    if (!kcode || !userid || !psw) {
+                        return false;
+                    }
+
+                    testSignin(key, kcode, userid, psw);
+                }
+            });
         }
 
         function updateServerList() {
@@ -185,6 +240,10 @@
 
             [].slice.call(document.querySelectorAll(".delete-button")).forEach(function(button) {
                 button.addEventListener("click", onClickDelete);
+            });
+
+            [].slice.call(document.querySelectorAll(".xt-server-item")).forEach(function(serverElement) {
+                serverElement.addEventListener("click", onClickServerElement);
             });
         }
 
@@ -237,6 +296,26 @@
                 // load settings from storage
                 _settings = JSON.parse(storage)
             }
+        }
+
+        function testSignin(serverKey, kcode, userid, psw) {
+            let url = "https://" + serverKey + "/Storage9/PALPrivateStorage/account/" + userid
+
+            rest.get(url, {
+                headers: {
+                    "KigyoCode": kcode,
+                    "UserPassWord": psw
+                },
+                onOK: function(xhr) {
+                    console.info(xhr.response);
+                },
+                onError: function(xhr) {
+                    let xmlDoc = $.parseXML(xhr.response);
+                    console.error(xmlDoc);
+                    let message = utils.evaluateXPath(xmlDoc, "/Error/Message/text()")[0].nodeValue;
+                    xdialog.warn(message);
+                }
+            });
         }
     })()
 
